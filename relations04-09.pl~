@@ -1,0 +1,663 @@
+/*********************************/
+/*********************************/
+/********** 04.09.2019 ***********/
+/*********************************/
+/*********************************/
+
+parent(tom, ann). % отношение родитель - ребенок. том родитель энн
+parent(tom, mike).
+parent(mary, mike).
+parent(mike, sue).
+parent(mike, john).
+parent(mike, nick).
+parent(john, jane).
+parent(john, jim).
+parent(sue, bob).
+parent(sue, mark).
+man(tom).
+man(mike).
+man(john).
+man(nick).
+man(jim).
+man(bob).
+man(mark).
+woman(mary).
+woman(ann).
+woman(sue).
+woman(jane).
+
+maried(kevin, sue).
+
+grandchild(X,Y) :- parent(Z,X), parent(Y,Z).  % отношение внук/внучка - дедушка/бабушка X внук/внучка Y. Z родитель Х и Y родитель Z
+hasChild(X) :- parent(X,_). % X имеет ребенка?
+isSister(X,Y):- woman(X), parent(Z,X), parent(Z,Y), dif(X,Y). % X сестра Y?
+ancestor(X,Y) :- parent(X,Y). %X предок Y
+% ancestor(X,Y) :- parent(Z,Y), ancestor(X,Z). % рекурсия по 2-ой
+% переменной
+ancestor(X,Y) :- parent(X,Z), ancestor(Z,Y).
+patriarch(X) :- parent(X,_), not(parent(_,X)).
+isCousin(X,Y) :- man(Y),grandchild(X,Z),grandchild(Y,Z), dif(X,Y),parent(R,X), parent(Q,Y), dif(Q,R),parent(Z,Q), parent(Z,R).
+
+% определить предикат является родственниками? женат на сестрах?
+
+isRelatives(X,Y) :- ancestor(Z,X), ancestor(Z,Y).
+
+mariedOnSister(X,Y) :- isSister(Y,Z), maried(X,Z).
+
+
+
+/*********************************/
+/*********************************/
+/********** 11.09.2019 ***********/
+/*********************************/
+/*********************************/
+
+
+
+
+% факториал
+
+%fact(1,1) :- !.
+%fact(X,Y) :- X1 is X-1, factil(X1,Y1), Y is Y1*X.
+
+/*
+facti(X,Y) :- factn(X,Y,1,1).
+factn(X,Y,I,P) :- I =< X, !, P1 is P*I, I1 is I+1,factn(X,Y,I1,P1).
+factn(_,P,_,P).
+*/
+
+facti(X,Y) :- factn(X,Y,1,1).
+factn(X,P,X,P) :- !.
+factn(X,Y,I,P) :- I1 is I+1, P1 is P*I1, factn(X,Y,I1,P1).
+
+
+% фиббоначи
+/*
+fib(1,1) :- !.
+fib(2,1) :- !.
+fib(X,Y) :- X1 is X-1, fib(X1,Y1), X2 is X-2, fib(X2,Y2), Y is Y1+Y2.
+*/
+
+fibi(X,Y) :- fibn(X,Y,1,0,1).
+fibn(X,P,X,_,P) :- !.
+fibn(X,Y,I,T,P) :- P1 is T+P, I1 is I+1, fibn(X,Y,I1,P,P1).
+
+%
+% Наибольший Общий Делитель
+%
+
+nod(A,0,Y) :- Y is A, !.
+nod(0,A,Y) :- Y is A, !.
+nod(A,B,Y) :- A >= B, !, X is A-B, nod(B,X,Y).
+nod(A,B,Y) :- X is B-A, nod(A,X,Y).
+
+%
+% Наименьшее Общее Кратное
+%
+%
+% найти min, max, Число сочетаний
+%
+
+% min
+min(A,B,C):- A>B, C is B, !.
+min(A,B,C):- A<B, C is A, !.
+
+% max
+max(A,B,C):- A>B, C is A, !.
+max(_,B,C):- C is B, !.
+
+%
+cmn(N,M,X):- fact(N,N1), fact(M,M1), (NM is N-M), fact(NM,NM1), (X is (N1/(M1*NM1))).
+
+
+
+
+
+
+
+
+/*********************************/
+/*********************************/
+/********** 18.09.2019  **********/
+/*********************************/
+/*********************************/
+
+
+
+%сумма элементов списка
+sum([], 0):-!.
+sum([X|Y],Z):-sum(Y,Z1), Z is Z1+X.
+
+
+
+% поиск i-го элемента
+find(0,[X|_],X):-!.
+find(I,[_|Y],Z):- I1 is I-1, find(I1,Y,Z).
+
+
+
+% Х является элементом списка
+lmember(X,[X|_]).
+lmember(X,[_|Y]):-lmember(X,Y).
+
+% минимальный элемент списка
+minList(X,[X]):- !.
+minList(X,[Y|Z]):- minlist(X1,Z), Y=<X1,!, X is Y.
+minList(X,[_|Z]):- minlist(X,Z).
+
+
+% перевернуть список
+
+reverse(X,Y):- reverse(X,[],Y).
+reverse([],Y,Y):-!.
+reverse([X|Y],Z,T):-reverse(Y,[X|Z],T).
+
+
+% список является началом другого списка
+
+isBegin([],_):-!.
+isBegin([X|Y],[X|Z]):-isBegin(Y,Z).
+
+
+% список является подсписком другого списка
+
+subList(X,Y):-isBegin(X,Y),!.
+subList(X,[_|Z]):-subList(X,Z).
+
+
+
+% удаляем из списка все заданные элементы
+
+deleteElem([],_,[]):-!.
+deleteElem([X|Y],X,Z):-deleteElem(Y,X,Z),!.
+deleteElem([X|Y],T,[X|Z]):-deleteElem(Y,T,Z).
+
+
+
+% склеить два списка
+
+%append([],X,X):-!.
+%append([X1|Y1],Z,[X1|Y2]):-append(Y1,Z,Y2).
+
+
+% 1) написать пердикат, который истенен, если в списке нет повторяющихся
+% элементов
+% 2) объединить два отсортированный список, в один отсортированный
+% 3) длина списка
+
+
+
+
+
+/*********************************/
+/*********************************/
+/********** 25.09.2019  **********/
+/*********************************/
+/*********************************/
+
+
+%
+% bubbleSort
+%
+
+swap([X,Y|Z],[Y,X|Z]):- X>Y,!.
+swap([X|Y],[X|Y1]):- swap(Y,Y1),!.
+
+bubbleSort(Q,W):- swap(Q,X),!,bubbleSort(X,W).
+bubbleSort(X,X):-!.
+
+%
+% Hoare quick sort
+%
+
+
+/*********************************/
+/*********************************/
+/********** 02.10.2019  **********/
+/*********************************/
+/*********************************/
+
+%
+% найти i-ый элемент, начиная с 1
+%
+
+findElem(1,X,[X|_]):-!.
+findElem(I,Z,[_|Y]):- I1 is I-1, findElem(I1,Z,Y).
+
+%
+% находится ли X слева от Y
+%
+%leftSide(X,Y,[X,Y|_]).
+%leftSide(X,Y,[_|T]):- leftSide(X,Y,T).
+
+leftSide(X,Y,T):-append(_,[X,Y|_],T).
+
+
+
+% ЗАДАЧА ЭЙНШТЕЙНА %
+
+%
+% национальность, напиток, сигареты, животные, цвет
+%
+
+%near(X,Y,T):-leftSide(X,Y,T).
+%near(Y,X,T):-leftSide(Y,X,T).
+
+einstain(Houses):- Houses = [_,_,_,_,_],
+    findElem(1, [nordwegian,_,_,_,_], Houses),
+    findElem(3, [_,milk,_,_,_], Houses),
+
+    leftSide([_,_,_,_,green], [_,_,_,_,white], Houses),
+
+    near([_,_,malboro,_,_], [_,_,_,cat,_], Houses),
+    near([_,_,_,horse,_], [_,_,dunHill,_,_], Houses),
+    near([nordwegian,_,_,_,_], [_,_,_,_,blue], Houses),
+    near([_,_,malboro,_,_], [_,water,_,_,_], Houses),
+
+    lmember([englishman,_,_,_,red], Houses),
+    lmember([swedish,_,_,dog,_], Houses),
+    lmember([danish,tea,_,_,_], Houses),
+    lmember([_,coffee,_,_,green], Houses),
+    lmember([_,_,pallMall,bird,_], Houses),
+    lmember([_,_,dunHill,_,yellow], Houses),
+    lmember([_,bear,winField,_,_], Houses),
+    lmember([german,_,rotMans,_,_], Houses).
+
+
+
+/****************************************/
+/*********** Enstauin *******************/
+/****************************************/
+
+%Member (X,List)
+%member(X,[]):-false,!.
+%lmember(X,[X|_]).
+%lmember(X,[_|T]):-lmember(X,T).
+
+%i elem(I,List,res) from 1
+%elem(I,Res,[]):-false,!.
+findi(1,H,[H|_]):-!.
+findi(I,Res,[_|T]):-I1 is I - 1,findi(I1,Res,T).
+
+% X левее Y
+%isLeft(X,Y,List).
+%isLeft(X,Y,[X,Y|_]):-!.
+%isLeft(X,Y,[Z|T]):-X\=Z,!,isLeft(X,Y,T).
+%isLeft(X,Y,[Z,S|T]):-Y\=S,isLeft(X,Y,[S|T]).
+isLeft(X,Y,T):-append(_,[X,Y|_],T).
+
+near(X,Y,T):-append(_,[X,Y|_],T).
+near(X,Y,T):-append(_,[Y,X|_],T).
+
+%Норвежец живет в первом до
+enstain(Houses):-Houses = [_,_,_,_,_],
+    %Новежец живет в первом доме
+    findi(1,[nord,_,_,_,_],Houses),
+    %Жилец из третьего дома пьет молоко
+    findi(3,[_,milk,_,_,_],Houses),
+    %Англичанин живет в красном доме
+    member([eng,_,_,_,red],Houses),
+    %Швед держит собаку
+    member([swid,_,_,dog,_],Houses),
+    %Датчанин пьет чай
+    member([dat,tea,_,_,_],Houses),
+    %Зеленый дом стоит левее белого
+    isLeft([_,_,_,_,green],[_,_,_,_,white],Houses),
+    %Жилец зеленого дома пьет кофе
+    member([_,coffee,_,_,green],Houses),
+    %Жилец, куряший palmal, держит птицу
+    member([_,_,palmar,bird,_],Houses),
+    %Жилец из желтого дома курит danhell
+    member([_,_,danhell,_,yellow],Houses),
+    %Курильщик malboro живет около того, кто держит кошку
+    near([_,_,malboro,_,_],[_,_,_,cat,_],Houses),
+    %Человек, который держит лошадь, живет рядом с курильщиком danhell
+    near([_,_,_,hourse,_],[_,_,danhell,_,_],Houses),
+    %Курильщик winfield пьет пиво
+    member([_,beer,winfield,_,_],Houses),
+    %Норвежец живет около голубого дома
+    near([nord,_,_,_,_],[_,_,_,_,blue],Houses),
+    %Немец курит rodmance
+    member([ger,_,rodmance,_,_],Houses),
+    %Курильщик malboro живет по соседву с человеком, который пьет воду
+    near([_,_,malboro,_,_],[_,water,_,_,_],Houses).
+
+
+% Есть пять домов. Национальность, напиток, сигарета, животное, цвет в
+% каждом доме разные. Задача - у кого рыбки
+%
+/****************************************/
+/****************************************/
+/****************************************/
+
+
+
+
+/*********************************/
+/*********************************/
+/********** 09.10.2019  **********/
+/*********************************/
+/*********************************/
+
+%
+% Вывести строку 3 раза, и длину строки
+%
+
+pr3(X):-string_concat(X,", ",Z), write(Z), write(Z), write(Z),
+    string_length(X,L), write(L).
+
+%
+% вывести первый, последний и средний элемент
+%
+
+firstElem(X) :- sub_string(X, 0, 1, _ ,R),
+    write(R).
+
+lastElem(X) :- string_length(X,L), L1 is L-1,
+    sub_string(X, L1, 1, _ ,R),
+    write(R).
+
+middleElem(X) :- string_length(X,L),
+    Y is L mod 2, Y \= 0,
+    L1 is L div 2,
+    sub_string(X, L1, 1, _, R),
+    write(R).
+
+firstLastMiddle(X) :- string_length(X, L),
+    Y is L mod 2, Y \= 0,
+    firstElem(X), middleElem(X), lastElem(X),!.
+
+firstLastMiddle(X) :-  string_length(X, L),
+    Y is L mod 2, Y = 0,
+    firstElem(X), lastElem(X),!.
+
+%
+% вывести позиции вхождений последнего элемента
+%
+
+posOfLast(X) :-sub_string(X,_,1,0,S),
+    sub_string(X, Y, _, _, S),
+    Z is Y+1, write(Z).
+
+
+%
+% удалить в строке все вхождения "abc"
+%
+
+delABC(X) :- split_string(X,"abc","abc",R),
+    atomics_to_string(R,L),
+    write(L).
+
+%
+% удалить в строке все лишние пробелы
+%
+
+delSpace(X) :- split_string(X," "," ",R),
+    atomics_to_string(R," ",L),
+    write(L).
+
+
+
+/*********************************/
+/*********************************/
+/********** 23.10.2019  **********/
+/*********************************/
+/*********************************/
+
+/*
+write(x) - вывод в консоль/файл
+
+writeln(x) - вывод с новой строки
+
+tab(N) - сдвиг курсора на N позиций
+
+read(X) - считывает символы до '.'
+readln(X) - считывает символы до конца строки, формируя список слов в одинарных кавычках, можно обрабатывать как список слов
+get_char(Х) - считывает из потока один символ
+see('NameOfFile') - откррывает файл для чтения, устанавливает его как текущий поток ввода
+seen - закрывает файл и после вызова ввод будет осуществляться с клавиатуры
+tell('FileName') - открывает файл для записи
+told - закрывает последний открытый файл
+*/
+
+
+
+%
+% FILES
+%
+
+run:- see('C:/Users/hieut/OneDrive/документы/prolog/test.txt'),
+    readln(X), write(X).
+
+fileToList(F,L):- seen, see(F), readFile([],[],L), seen.
+readFile(T,R,L):- get0(X), (X<0, (T=[],L=R; name(T1,T),
+    append(R,[T1],L)),!;
+    ( X=32; X=10; X=13  ),
+    ( T =[],readFile(T,R,L),name(T1,T), append(R,[T1],R1),
+    readFile([],R1,L)),!;
+    X>0, append(T,[X],T1),readFile(T1,R,L),!).
+
+
+% в файле дан список слов разделенные точками.
+% нужно получить файл со словами без повторений.
+
+fileToListS(F,L):- seen, see(F), readFile([],[],L), seen,
+    atomics_to_string(L," ",R), writeln(R),
+    split_string(R,".","",L1), writeln(L1).
+
+
+
+
+/*********************************/
+/*********************************/
+/********** 30.10.2019  **********/
+/*********************************/
+/*********************************/
+
+%
+% Базы знаний
+%
+
+% asserta(X). /*добавить в начало*/
+% assertz(X). /*добавить в конец*/
+
+% retract - в trace нажимать Enter, чтобы удалить одного
+% пробел - чтобы удалить все вхождения
+
+% findall(элемент, факт, список) - поиск всех элементов
+% и добавляет в список
+
+% факториал
+:- dynamic fact/2.
+
+fact(1,1):-!.
+fact(X,Y):- X1 is X-1, fact(X1,Y1), asserta(fact(X1,Y1)),
+    Y is Y1*X, !.
+
+% фиббоначчи
+:- dynamic fibon/2.
+
+fibon(1,1) :- !.
+fibon(2,1) :- !.
+fibon(X,Y) :- X1 is X-1, fibon(X1,Y1),asserta(fibon(X1,Y1)),!,
+    X2 is X-2,
+    fibon(X2,Y2),asserta(fibon(X2,Y2)),
+    Y is Y1+Y2, !.
+
+%
+% база данных студентов
+%
+
+student("Иванов", "25.04.1990","89501234567").
+student("Сидоров", "02.03.1990","89621232567").
+student("Ковалев", "05.06.1990","89301234547").
+student("Прохин", "25.05.1990","89601234555").
+
+:- dynamic studentd/3.
+
+myassert:-student(X,Y,Z), assertz(studentd(X,Y,Z)), fail.
+myassert:-!.
+
+
+
+
+
+
+%
+% дз
+% удалить повторы из базы
+%
+
+
+
+/*********************************/
+/*********************************/
+/********** 06.11.2019  **********/
+/*********************************/
+/*********************************/
+
+%
+% ДЕРЕВЬЯ
+%
+
+create_tree(X, tree(X, empty, empty)).
+insert_left(X,tree(A,_,B),tree(A,X,B)).
+insert_right(X,tree(A,B,_),tree(A,B,X)).
+
+tr:- create_tree(5,X), create_tree(6, Y), insert_right(Y,X,Z),
+    write(Z),tree_member(7,Z).
+%
+% является членом дерева
+%
+tree_member(X,tree(X,_,_)):-!.
+tree_member(X,tree(_,L,_)):-tree_member(X,L),!.
+tree_member(X,tree(_,_,R)):-tree_member(X,R),!.
+
+%
+% глубина дерева
+%
+
+tree_height(empty,0):-!.
+tree_height(tree(_,L,R),D):-
+    tree_height(L,D1),tree_height(R,D2),
+    max(D1,D2,M), D is M+1.
+
+tr_h:- create_tree(5,X), create_tree(6, Y), insert_right(Y,X,Z),
+    tree_height(Z,A),write(A).
+
+%
+% количество элементов дерева
+%
+
+tree_elem(empty, 0):-!.
+tree_elem(tree(_,L,R),D):-
+    tree_elem(L,D1), tree_elem(R,D2), D is D1 + D2 + 1.
+
+tr_e:-create_tree(5,X),create_tree(6, Y), insert_right(Y,X,Z),
+    tree_elem(Z,A), write(A).
+
+%
+% сортировка дерева
+%
+
+tree_sort(X,Y):- sort_tree(X,Tree),tree_list(Tree,Y).
+sort_tree([],empty):-!.
+sort_tree([X|Y],Tree):-sort_tree(Y,Tree1),ins(X,Tree1,Tree).
+ins(X,empty,tree(X,empty,empty)):-!.
+ins(X,tree(Y,L,R),tree(Y,L,R1)):-X>=Y,ins(X,R,R1),!.
+ins(X,tree(Y,L,R),tree(Y,L1,R)):-ins(X,L,L1).
+tree_list(empty,[]).
+tree_list(tree(X,L,R),List):-
+    tree_list(L,D1), tree_list(R,D2), append(D1,[X|D2],List).
+
+%
+% посчитать количество листиков
+%
+
+% дописать
+%count_list(_,empty,empty,1):-!.
+%count_list(X,tree(_,L,R),A):-
+%    count_list(L,A1), count_list(R,A2).
+
+
+/*********************************/
+/*********************************/
+/********** 13.11.2019  **********/
+/*********************************/
+/*********************************/
+
+/* ГРАФЫ */
+
+% создаем ребра графов. откуда, куда, какой длины
+p(1,2,1).
+p(1,3,2).
+p(2,4,1).
+p(3,4,2).
+p(4,5,3).
+
+% поиск всех длин путей между вершинами
+find_all(X,G,Bag):-post_it(X,G),gather([],Bag).
+post_it(X,G):-call(G),asserta(data999(X)),fail.
+post_it(_,_).
+gather(B,Bag):-data999(X),retract(data999(X)),
+    gather([X|B],Bag),!.
+gather(B,B).
+
+% поиск пути в графе. из какой вершины, в какую, путь
+%search(X,Y,[X,Y]):-p(X,Y,_);p(Y,X,_),!.
+%search(X,Y,[X|T]):-(p(X,Z,_);p(Z,X,_)),search(Z,Y,T),
+%    not(member(X,T)),!.
+% search(X,Y,T):-(p(X,Z,_);p(Z,X,_)),search(Z,Y,T).
+
+%
+% найти вершину графа с максимальной степенью
+% (количество ребер от него)
+%
+
+
+
+/*********************************/
+/*********************************/
+/********** 27.11.2019  **********/
+/*********************************/
+/*********************************/
+
+% 961(970)3151
+
+
+edge(1,2).
+edge(1,4).
+edge(1,3).
+edge(2,4).
+edge(3,4).
+edge(3,5).
+edge(4,5).
+edge(5,6).
+
+% первый путь из Х в Y
+search(X,Y,[X,Y]):-edge(X,Y);edge(Y,X),!.
+search(X,Y,[X|T]):-(edge(X,Z);edge(Z,X)),
+    search(Z,Y,T), not(member(X,T)),!.
+search(X,Y,T):- (edge(X,Z); edge(Z,X)), search(Z,Y,T).
+
+% все пути из X в Y
+path(X,Y,T):-path(X,Y,[],T).
+path(X,Y,Seen,[X,Y]):- \+memberchk(X,Seen),
+    (edge(X,Y);edge(Y,X)).
+path(X,Z,Seen,[X|T]):- \+memberchk(X,Seen),
+    (edge(X,Y);edge(Y,X)),path(Y,Z,[X|Seen],T),
+    \+memberchk(X,T).
+
+
+% задаем граф списками смежности
+children(1,[2,3,4]).
+children(2,[1,4]).
+children(3,[1,4,5]).
+children(4,[2,3,6]).
+children(5,[3,4,6]).
+children(6,[5]).
+
+path_first(Start, Answer):- path_start([Start],Answer),!.
+path_start([X|T],Y):-children(X,C), member(Z,C),
+    \+memberchk(Z,[X|T]), path_start([Z,X|T],Y).
+path_start(X,Y):-reverse(X,Y).
