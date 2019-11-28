@@ -108,27 +108,18 @@ Res = [(morozov,XL1,XL2),
 %
 % сравнение первого и последнего элементов в слове
 %
-
-firstElem(X,R) :- sub_string(X, 0, 1, _ ,R), write(R).
+firstElem(X,R) :- sub_string(X, 0, 1, _ ,R).
 
 lastElem(X,R) :- string_length(X,L), L1 is L-1,
-    sub_string(X, L1, 1, _ ,R), write(R).
+    sub_string(X, L1, 1, _ ,R).
 
-firstEqualLast(X):- firstElem(X,Y), write(", "),
-        lastElem(X,Z),nl,
-        string_codes(X, Codes), write(Codes), nl,
-        Y = Z, !, write("equal").
-firstEqualLast(_):- nl, write("not equal").
+firstEqualLast(X):- firstElem(X,Y),
+        lastElem(X,Z),
+               Y = Z.
 
 %
 % Подсчет вхождений
 %
-
-%char_count("",_,0).
-%char_count(S,C,N):- S = [X|S1], X = C, !, N1 is N+1,
-%              char_count(S1,C,N1).
-%char_count(S,C,N):- S = [_|S1], char_count(S1,C,N).
-/***/
 
 countK("",_,0).
 countK(S,C,N):- atom_chars(S,MidStr), MidStr = [X|S1],
@@ -138,26 +129,25 @@ countK(S,C,N):- atom_chars(S,MidStr), MidStr =[_|S1],
             atomics_to_string(S1,S2),
             countK(S2,C,N),!.
 
-
 findWord(S,C):- countK(S,C,N), N = 3, !, write(S), write(" ").
 findWord(_,_).
 
 %
-% проверка списка на количество вхождений k в слова
+% Итоговый результат
 %
 
-pred([H|T],C):- findWord(H,C),  pred(T,C).
-pred([], _).
+preRes([H|T]):- firstEqualLast(H),!,
+              findWord(H, k), preRes(T).
+preRes([_|T]):- preRes(T).
+preRes([]).
+
+res(S):- split_string(S," ","./,/;/!/?",L),
+              preRes(L).
 
 
-testStr(S):- split_string(S," ", " ",L), pred(L,k).
-
-checkCount([H|T],C):-countK(H,C,_), checkCount(T,C).
-checkCount([],_).
-
-testCheck(S):-split_string(S," ", " ",L), checkCount(L,k).
-
-
-midRes(S,L):- split_string(S," ","./,/;/!/?",midL),
-              firstEqualLast(midL),
-              findWord(midL, k).
+%%%%%%%%%%%%%%% Индивидуальное задание № 4. Файлы %%%%%%%%%%%%%%
+% В файле записаны арифметические выражения на отдельных
+% строках (операции a+b , a–b , a*b и a/b и их суперпозиции).
+% В отдельный файл вывести результат вычисления
+% каждого выражения.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
