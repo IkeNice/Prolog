@@ -4,9 +4,6 @@ crew(1, "No crew").
 crew(2, "Jabbawockeez").
 crew(3, "Kinjaz").
 
-:- multifile prolog_colour:style/2.
-
-
 :- dynamic style/2.
 
 style(1, "Hip-Hop").
