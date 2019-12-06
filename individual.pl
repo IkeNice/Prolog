@@ -109,40 +109,35 @@ Res = [(morozov,XL1,XL2),
 % сравнение первого и последнего элементов в слове
 %
 firstElem(X,R) :- sub_string(X, 0, 1, _ ,R).
-
 lastElem(X,R) :- string_length(X,L), L1 is L-1,
-    sub_string(X, L1, 1, _ ,R).
-
+                 sub_string(X, L1, 1, _ ,R).
 firstEqualLast(X):- firstElem(X,Y),
-        lastElem(X,Z),
-               Y = Z.
+                    lastElem(X,Z),
+                    Y = Z.
 
 %
 % Подсчет вхождений
 %
-
 countK("",_,0).
 countK(S,C,N):- atom_chars(S,MidStr), MidStr = [X|S1],
-            X = C, !,atomics_to_string(S1,S2),
-            countK(S2,C,N1), N is N1+1, !.
+                X = C, !,atomics_to_string(S1,S2),
+                countK(S2,C,N1), N is N1+1, !.
 countK(S,C,N):- atom_chars(S,MidStr), MidStr =[_|S1],
-            atomics_to_string(S1,S2),
-            countK(S2,C,N),!.
-
+                atomics_to_string(S1,S2),
+                countK(S2,C,N),!.
 findWord(S,C):- countK(S,C,N), N = 3, !, write(S), write(" ").
 findWord(_,_).
 
 %
 % Итоговый результат
 %
-
-preRes([H|T]):- firstEqualLast(H),!,
-              findWord(H, k), preRes(T).
+preRes([H|T]):- firstEqualLast(H), !,
+                findWord(H, k), preRes(T).
 preRes([_|T]):- preRes(T).
 preRes([]).
 
 res(S):- split_string(S," ","./,/;/!/?",L),
-              preRes(L).
+         preRes(L).
 
 
 %%%%%%%%%%%%%%% Индивидуальное задание № 4. Файлы %%%%%%%%%%%%%%
@@ -150,4 +145,56 @@ res(S):- split_string(S," ","./,/;/!/?",L),
 % строках (операции a+b , a–b , a*b и a/b и их суперпозиции).
 % В отдельный файл вывести результат вычисления
 % каждого выражения.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%
+% Считать из файла, пока не пустая строка
+%
+/*
+run:-
+    see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
+    readln(X), X\=[],!, write(X), X = [H|_], writeln(H),
+    run, seen.
+run:-seen.
+%
+% Модификация верхнего
+%
+look:- see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
+    readln(X), X\=[],!, writeln(X), X = [H,H1,H2|_],
+    /*write(H), tab(1),write(H1),tab(1),write(H2),*/ H1 = +,
+    Z is (H + H2), writeln(Z), look, seen.
+look.
+*/
+
+openFileToRead(X):-
+    see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
+    readln(X),seen.
+
+openFileToWrite:-
+    tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt').
+
+test:-Z is 5*5, openFileToWrite, writeln(Z), told.
+
+
+%res:- openFileToRead(X), openFileToWrite,writeln(X), told.
+
+
+run:-
+    see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
+    readln(X), X\=[], !, writeln(X), listLength(X,Z),write(Z),
+    Z = 3, !,nl,
+    X=[H1,H2,H3|_], H2 = +, !, A is (H1+H3),
+    /*openFileToWrite, */writeln(A),
+    /*X = [H|_], writeln(H), told,*/
+    run, seen.
+run:-seen.
+
+listLength([],0):-!.
+listLength([_|Y],Z):-listLength(Y,Z1), Z is Z1+1.
+
+
+
+
+

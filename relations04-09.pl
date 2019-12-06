@@ -148,9 +148,9 @@ minList(X,[_|Z]):- minlist(X,Z).
 
 % перевернуть список
 
-reverse(X,Y):- reverse(X,[],Y).
-reverse([],Y,Y):-!.
-reverse([X|Y],Z,T):-reverse(Y,[X|Z],T).
+myreverse(X,Y):- myreverse(X,[],Y).
+myreverse([],Y,Y):-!.
+myreverse([X|Y],Z,T):-myreverse(Y,[X|Z],T).
 
 
 % список является началом другого списка
@@ -414,7 +414,7 @@ tab(N) - сдвиг курсора на N позиций
 read(X) - считывает символы до '.'
 readln(X) - считывает символы до конца строки, формируя список слов в одинарных кавычках, можно обрабатывать как список слов
 get_char(Х) - считывает из потока один символ
-see('NameOfFile') - откррывает файл для чтения, устанавливает его как текущий поток ввода
+see('NameOfFile') -откррывает файл для чтения, устанавливает его как текущий поток ввода
 seen - закрывает файл и после вызова ввод будет осуществляться с клавиатуры
 tell('FileName') - открывает файл для записи
 told - закрывает последний открытый файл
@@ -461,7 +461,7 @@ fileToListS(F,L):- seen, see(F), readFile([],[],L), seen,
 % asserta(X). /*добавить в начало*/
 % assertz(X). /*добавить в конец*/
 
-% retract - в trace нажимать Enter, чтобы удалить одного
+% retract - в trace нажимать Enter, чтобы удалить одного,
 % пробел - чтобы удалить все вхождения
 
 % findall(элемент, факт, список) - поиск всех элементов
@@ -666,3 +666,81 @@ path_first(Start, Answer):- path_start([Start],Answer),!.
 path_start([X|T],Y):-children(X,C), member(Z,C),
     \+memberchk(Z,[X|T]), path_start([Z,X|T],Y).
 path_start(X,Y):-reverse(X,Y).
+
+
+
+
+/*********************************/
+/*********************************/
+/********** 04.12.2019  **********/
+/*********************************/
+/*********************************/
+
+% поиск мостов
+
+child(1,[2,3]).
+child(2,[1,3]).
+child(3,[1,2,4]).
+child(4,[3,5]).
+child(5,[4,6]).
+child(6,[8,7]).
+child(7,[6,8]).
+child(8,[6,7]).
+
+%
+%  findall - выдаем ответ А/В,
+%  где А это вершина,
+%  В - ребенок из А
+%  и ответ записываем в Х
+%  Х - список всех ребер графа
+%  clear хотим удалить из Х повторы, получаем Y
+%
+
+findbr(R):-findall(A/B,(child(A,L),
+           member(B,L)),X),clear(X,Y),
+           candel(Y,R).
+
+%
+% candel удаляем все, что можно удалить
+%
+
+candel([],[]):-!.
+candel([A/B|T],P):-candel(T,P1),!,(mydel(A/B),
+                   P=[A/B|P1];P=P1).
+%
+% findall ответ это список всех первых элементов
+% удовлетворяющих условию 2
+%
+% setof M1 - список М без повторений
+%
+
+mydel(A/B):-
+    findall(L,child(L,_),[H|T]),
+    findall(G,(member(G,T),pathr(A/B,H,G,[H],_)),M),
+    setof(Z,member(Z,M),M1),
+    length(T,S1),
+    length(M1,S2),
+    S1\=S2.
+
+
+pathr(_,X,X,P,P).
+pathr(X/Y,A,B,T,R):-child(A,L),
+    member(Z,L),
+    not(member(Z,T)),
+    A/Z\=X/Y,A/Z\=Y/X,
+    pathr(X/Y,Z,B,[Z|T],R).
+
+
+clear([],[]):-!.
+clear([X/Y|T],R):-clear(T,R1),
+    ((member(X/Y,R1);member(Y/X,R1)),
+    R=R1;
+    R=[X/Y|R1]),!.
+
+
+
+
+
+
+
+

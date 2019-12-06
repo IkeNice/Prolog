@@ -1,0 +1,16 @@
+% танцевальная команда (Имя/Id)
+:- dynamic dance_crew/2.
+dance_crew("No crew",1).
+dance_crew("Jabbawockeez",2).
+dance_crew("Kinjaz",2).
+
+% стиль танцев (Название/Id)
+:- dynamic style/2.
+style("Hip-hop",1).
+style("Popping",2).
+style("breakdance",3).
+
+% танцор (Имя, Id стиля, Id команды)
+:- dynamic dancer/3.
+dancer("Dytto",2,1).
+dancer("Anthony Lee").
