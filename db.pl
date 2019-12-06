@@ -4,7 +4,10 @@ crew(1, "No crew").
 crew(2, "Jabbawockeez").
 crew(3, "Kinjaz").
 
-:- dynamic style/2
+:- multifile prolog_colour:style/2.
+
+
+:- dynamic style/2.
 
 style(1, "Hip-Hop").
 style(2, "Popping").
@@ -18,3 +21,4 @@ dancer(3, 3, 1, "Anthony Lee").
 dancer(4, 2, 1, "Phil Tayag").
 dancer(5, 1, 2, "Fik-Shun").
 dancer(6, 3, 3, "Steven Lor").
+
