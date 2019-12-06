@@ -4,7 +4,7 @@ crew(1, "No crew").
 crew(2, "Jabbawockeez").
 crew(3, "Kinjaz").
 
-:- dynamic style/2
+:- dynamic style/2.
 
 style(1, "Hip-Hop").
 style(2, "Popping").
