@@ -80,9 +80,18 @@ delCrew:-writeln("Удалить команду"),
     retract(crew(X,_)),
     retractall(dancer(_,X,_,_)),
     writeln("Команда успешно удалена"),
-     tell('C:/Users/hieut/OneDrive/Документы/Prolog/db.pl'),
+    tell('C:/Users/hieut/OneDrive/Документы/Prolog/db.pl'),
     listing(crew), listing(style), listing(dancer),
     told, write('Таблица команд обновлена'),nl.
+
+% удалить танцора
+delDancer:-writeln("Удалить танцора"),
+    write("ID танцора: "),read(X),
+    retract(dancer(X,_,_,_)),
+    writeln("Танцор успешно удален"),
+    tell('C:/Users/hieut/OneDrive/Документы/Prolog/db.pl'),
+    listing(crew), listing(style), listing(dancer),
+    told, write('Таблица танцоров обновлена'),nl.
 
 % сохранение базы
 save:- tell('C:/Users/hieut/OneDrive/Документы/Prolog/db.pl'),

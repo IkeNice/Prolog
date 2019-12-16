@@ -4,22 +4,6 @@ run:- consult('C:/Users/hieut/OneDrive/Документы/Prolog/db.pl'),
     retractall(crew/2),retractall(style/2),
     retractall(dancer/4).
 
-/*
-% показать все
-showAll:-run,
-    writeln(==================================================),
-    writeln("//============= Таблица танцоров =============//"),
-    writeln(==================================================),
-    nl, style(A,B), crew(C,D),
-    dancer(_, A, C, X),
-    write("Имя: "), writeln(X),
-    write("Стиль: "), writeln(B),
-    write("Команда: "), writeln(D), nl, continue,
-    writeln(==================================================),
-    writeln("//============== Таблица стилей ==============//"),
-    writeln(==================================================),
-    nl.
-*/
 % показать танцоров
 showDancers:- run, nl, style(A,B), crew(C,D),
     dancer(_, A, C, X),

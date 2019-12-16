@@ -146,28 +146,6 @@ res(S):- split_string(S," ","./,/;/!/?",L),
 % В отдельный файл вывести результат вычисления
 % каждого выражения.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%
-% Считать из файла, пока не пустая строка
-%
-/*
-run:-
-    see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
-    readln(X), X\=[],!, write(X), X = [H|_], writeln(H),
-    run, seen.
-run:-seen.
-%
-% Модификация верхнего
-%
-look:- see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
-    readln(X), X\=[],!, writeln(X), X = [H,H1,H2|_],
-    /*write(H), tab(1),write(H1),tab(1),write(H2),*/ H1 = +,
-    Z is (H + H2), writeln(Z), look, seen.
-look.
-*/
-
 openFileToRead(X):-
     see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
     readln(X),seen.
@@ -175,26 +153,93 @@ openFileToRead(X):-
 openFileToWrite:-
     tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt').
 
-test:-Z is 5*5, openFileToWrite, writeln(Z), told.
-
-
-%res:- openFileToRead(X), openFileToWrite,writeln(X), told.
-
-
-run:-
-    see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
-    readln(X), X\=[], !, writeln(X), listLength(X,Z),write(Z),
-    Z = 3, !,nl,
-    X=[H1,H2,H3|_], H2 = +, !, A is (H1+H3),
-    /*openFileToWrite, */writeln(A),
-    /*X = [H|_], writeln(H), told,*/
-    run, seen.
-run:-seen.
+%
+% длина списка
+%
 
 listLength([],0):-!.
 listLength([_|Y],Z):-listLength(Y,Z1), Z is Z1+1.
 
+%
+% позиция элемента в списке, считаем с 1
+%
 
+indexOf([Znak|_], Znak, 1):-!.
+indexOf([_|T], Znak, Pos):-
+  indexOf(T, Znak, Ind), !,
+  Pos is Ind+1.
 
+% первые N элементов списка
+get_first_n(List, N, FirstN):-
+  append(FirstN, _Tail, List),
+  length(FirstN, N),!.
 
+% список без первых N элементов
+rem_first_n(List, N, Last):-
+  append(_FirstN, Last, List),
+  length(_FirstN, N),!.
 
+% удаление последнего элемента списка
+dellast([_],[]):-!.
+dellast([X|T],[X|Y]):-dellast(T,Y).
+
+% ищем все деления
+preDiv(X,U):- H = /, indexOf(X,H,A), !, A1 is A-1,
+    get_first_n(X,A1,L1),
+    last(L1,Last),
+    %A2 is A+1,
+    rem_first_n(X,A,[First|L2]),
+    R is Last/First,
+    dellast(L1,L3),
+    append(L3,[R],L4),
+    append(L4,L2,PreR), preDiv(PreR, U).
+preDiv(X,X):- !.
+
+% ищем все умножения
+preMul(X,U):-H = *, indexOf(X,H,A), !, A1 is A-1,
+    get_first_n(X,A1,L1),
+    last(L1,Last),
+    %A2 is A+1,
+    rem_first_n(X,A,[First|L2]),
+    R is Last * First,
+    dellast(L1,L3),
+    append(L3,[R],L4),
+    append(L4,L2,PreR), preMul(PreR, U).
+preMul(X,X):- !.
+
+% ищем все сложения
+prePl(X,U):-H = +, indexOf(X,H,A), !, A1 is A-1,
+    get_first_n(X,A1,L1),
+    last(L1,Last),
+    %A2 is A+1,
+    rem_first_n(X,A,[First|L2]),
+    R is Last + First,
+    dellast(L1,L3),
+    append(L3,[R],L4),
+    append(L4,L2,PreR), prePl(PreR, U).
+prePl(X,X):- !.
+
+% ищем все минусы
+preMin(X,U):-H = -, indexOf(X,H,A), !, A1 is A-1,
+    get_first_n(X,A1,L1),
+    last(L1,Last),
+    %A2 is A+1,
+    rem_first_n(X,A,[First|L2]),
+    R is Last - First,
+    dellast(L1,L3),
+    append(L3,[R],L4),
+    append(L4,L2,PreR), preMin(PreR, U).
+preMin(X,X):- !.
+
+test(X,R3):-
+    preDiv(X,R), preMul(R,R1),prePl(R1,R2), preMin(R2,R3),
+    tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt'),
+    write(R3), told.
+
+% result
+rez(R3):-
+    see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
+    readln(X), write(X), X \= [], !,
+    preDiv(X,R), preMul(R,R1),prePl(R1,R2), preMin(R2,R3),
+    tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt'),
+    write(R3),told.
