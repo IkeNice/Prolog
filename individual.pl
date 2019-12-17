@@ -215,11 +215,26 @@ preMin(X,U):-H = -, indexOf(X,H,A), !, A1 is A-1,
     append(L4,L2,PreR), preMin(PreR, U).
 preMin(X,X):- !.
 
+% последовательное выполнение + и -
+
+addition(H1,H3,Res):- Res is H1 + H3. % если сложение
+subtraction(H1,H3,Res):-Res is H1 - H3. % если разность
+
+posled([H1,H2,H3|T],U):- H2 = +, !, addition(H1,H3,Res),
+    append([Res],T,L1),
+    posled(L1,U).
+posled([H1,H2,H3|T],U):- H2 = -, !, subtraction(H1,H3,Res),
+    append([Res],T,L1),
+    posled(L1,U).
+posled(X,X):-!.
+
 % result
 result4:-
     see('C:/Users/hieut/OneDrive/ƒокументы/Prolog/ind4.txt'),
     readln(X), X \= [], !,
-    preDiv(X,R), preMul(R,R1),prePl(R1,R2), preMin(R2,R3),
+    preDiv(X,R), preMul(R,R1),
+    /*prePl(R1,R2), preMin(R2,R3),*/
+    posled(R1,R3),
     tell('C:/Users/hieut/OneDrive/ƒокументы/Prolog/ans.txt'),
     writeln(R3), result4.
 result4:-seen, told.

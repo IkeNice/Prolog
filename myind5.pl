@@ -6,7 +6,7 @@ run:- consult('C:/Users/hieut/OneDrive/Документы/Prolog/db.pl'),
 
 % показать танцоров
 showDancers:- run, nl, style(A,B), crew(C,D),
-    dancer(_, A, C, X),
+    dancer(_, C, A, X),
     write("Имя: "), writeln(X),
     write("Стиль: "), writeln(B),
     write("Команда: "), writeln(D), nl, fail.
