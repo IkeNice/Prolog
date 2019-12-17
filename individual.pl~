@@ -237,10 +237,10 @@ test(X,R3):-
     write(R3), told.
 
 % result
-rez(R3):-
+rez:-
     see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
-    readln(X), write(X), X \= [], !,
+    readln(X), X \= [], !,
     preDiv(X,R), preMul(R,R1),prePl(R1,R2), preMin(R2,R3),
     tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt'),
-    write(R3),told.
-rez(X):-writeln(X), seen.
+    writeln(R3), rez.
+rez:-seen,told.

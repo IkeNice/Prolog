@@ -146,12 +146,6 @@ res(S):- split_string(S," ","./,/;/!/?",L),
 % В отдельный файл вывести результат вычисления
 % каждого выражения.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-openFileToRead(X):-
-    see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
-    readln(X),seen.
-
-openFileToWrite:-
-    tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt').
 
 %
 % длина списка
@@ -231,15 +225,11 @@ preMin(X,U):-H = -, indexOf(X,H,A), !, A1 is A-1,
     append(L4,L2,PreR), preMin(PreR, U).
 preMin(X,X):- !.
 
-test(X,R3):-
-    preDiv(X,R), preMul(R,R1),prePl(R1,R2), preMin(R2,R3),
-    tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt'),
-    write(R3), told.
-
 % result
-rez(R3):-
+result4:-
     see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
-    readln(X), write(X), X \= [], !,
+    readln(X), X \= [], !,
     preDiv(X,R), preMul(R,R1),prePl(R1,R2), preMin(R2,R3),
     tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt'),
-    write(R3),told.
+    writeln(R3), result4.
+result4:-seen, told.
