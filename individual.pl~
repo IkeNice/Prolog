@@ -146,24 +146,12 @@ res(S):- split_string(S," ","./,/;/!/?",L),
 % В отдельный файл вывести результат вычисления
 % каждого выражения.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-openFileToRead(X):-
-    see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
-    readln(X),seen.
 
-openFileToWrite:-
-    tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt').
-
-%
 % длина списка
-%
-
 listLength([],0):-!.
 listLength([_|Y],Z):-listLength(Y,Z1), Z is Z1+1.
 
-%
 % позиция элемента в списке, считаем с 1
-%
-
 indexOf([Znak|_], Znak, 1):-!.
 indexOf([_|T], Znak, Pos):-
   indexOf(T, Znak, Ind), !,
@@ -231,16 +219,17 @@ preMin(X,U):-H = -, indexOf(X,H,A), !, A1 is A-1,
     append(L4,L2,PreR), preMin(PreR, U).
 preMin(X,X):- !.
 
-test(X,R3):-
-    preDiv(X,R), preMul(R,R1),prePl(R1,R2), preMin(R2,R3),
-    tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt'),
-    write(R3), told.
-
 % result
-rez:-
+result4:-
     see('C:/Users/hieut/OneDrive/Документы/Prolog/ind4.txt'),
     readln(X), X \= [], !,
     preDiv(X,R), preMul(R,R1),prePl(R1,R2), preMin(R2,R3),
     tell('C:/Users/hieut/OneDrive/Документы/Prolog/ans.txt'),
-    writeln(R3), rez.
-rez:-seen,told.
+    writeln(R3), result4.
+result4:-seen, told.
+
+
+%%%%%%%%%%%%%%% Индивидуальное задание № 6. Графы %%%%%%%%%%%%%
+% Даны два графа из файла в любой удобной для реализации форме.
+% Проверить, являются ли они гомеоморфными.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
