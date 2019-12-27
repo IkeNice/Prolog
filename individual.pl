@@ -241,6 +241,74 @@ result4:-seen, told.
 
 
 %%%%%%%%%%%%%%% Индивидуальное задание № 6. Графы %%%%%%%%%%%%%
-% Даны два графа из файла в любой удобной для реализации форме.
-% Проверить, являются ли они гомеоморфными.
+% Даны два графа в любой удобной для реализации форме.
+% Проверить, являются ли они изоморфными.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+children1(1,[5,6,7]).
+children1(2,[4,5,6]).
+children1(3,[4,5,6]).
+children1(4,[2,3,7]).
+children1(5,[1,2,3]).
+children1(6,[1,2,3]).
+children1(7,[1,4]).
+
+children2(1,[4,7]).
+children2(2,[4,5,6]).
+children2(3,[4,5,6]).
+children2(4,[1,2,3]).
+children2(5,[7,2,3]).
+children2(6,[2,3,7]).
+children2(7,[1,5,6]).
+
+%children1(1,[2,3]).
+%children1(2,[1,3,4]).
+%children1(3,[1,2]).
+%children1(4,[2]).
+
+%children2(1,[3]).
+%children2(2,[3,4]).
+%children2(3,[1,2,4]).
+%children2(4,[2,3]).
+
+
+find_edge1(R1):-findall(A/B,(children1(A,L), member(B,L)),X), %находим все ребра
+           clear(X,R1).
+find_edge2(R1):-findall(A/B,(children2(A,L), member(B,L)),X), %находим все ребра
+           clear(X,R1).
+
+clear([],[]):-!.
+clear([X/Y|T],R):-clear(T,R1),
+    ((member(X/Y,R1);member(Y/X,R1)),
+      R=R1;
+    R=[X/Y|R1]),!.
+
+position(L, X, [X|L]).
+position([H|T1], X, [H|T2]) :-
+         position(T1,X,T2).
+%Перестановки
+transposition([],[]).
+transposition([H|T],L) :-
+         transposition(T,T1),
+         position(T1,H,L).
+
+%Ищем индекс элемента
+indexOf([Znak|_], Znak, 1):-!.
+indexOf([_|T], Znak, Pos):-
+indexOf(T, Znak, Ind), !,
+Pos is Ind+1.
+
+%Ищем элемент по индексу
+find(1,[Result|_],Result):-!.
+find(Number,[_|Tail],Result):-N is Number-1,find(N,Tail,Result).
+
+%проверяем все ребра графов на совпадения в перестановках
+prov(_,_,[],_).
+prov(L,L1,[A/B|R],R1):-indexOf(L,A,X),indexOf(L,B,Y),
+   find(X,L1,V1),find(Y,L1,V2), hasr(V1/V2,R1), prov(L,L1,R,R1).
+
+%Проверяем есть ли ребро
+hasr(A/B,L):-member(A/B,L);member(B/A,L).
+
+result6:- findall(V,children1(V,_),L),findall(V,children2(V,_),L1), length(L,K),length(L1,K1), K=K1,find_edge1(R),find_edge2(R1),length(R,P),length(R1,P1), P=P1,
+    transposition(L1,V),prov(L,V,R,R1),!.
